@@ -39,7 +39,7 @@ Each **Star Entry** includes:
 Star App Journal works **seamlessly offline**, storing all changes locally and **synchronizing automatically** when the device is back online.
 
 - ✅ **Offline**
-  - Create, read, update, and delete stars (stored locally in SQLite)
+  - Create stars (stored locally in SQLite)
 - 🔁 **Sync**
   - Upon reconnection, all local changes are pushed to the server
 
