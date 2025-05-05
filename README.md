@@ -1,16 +1,56 @@
-# star_journal
+# 🌌 Star App Journal
 
-A new Flutter project.
+**Star App Journal** is a digital companion for star enthusiasts and sky gazers to document, explore, and relive their celestial adventures. Whether you're tracking a meteor shower or just observing the night sky, this app lets you log every discovery — online or offline.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## ✨ Features
 
-A few resources to get you started if this is your first Flutter project:
+### 📝 Journal Entries
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Users can **add, view, update**, and **delete** information about celestial elements they've observed.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Each **Star Entry** includes:
+
+- `name`: Name of the star or celestial body  
+- `radius`: Radius (in kilometers or solar radii)  
+- `position`: X and Y coordinates  
+- `temperature`: Temperature in Kelvin (or `"unknown"`)  
+- `galaxy`: The galaxy the star belongs to  
+- `constellation`: The related constellation  
+- `description`: Personal notes or observations  
+- `photo`: Image link provided by the user  
+
+---
+
+## 🔄 CRUD Operations
+
+| Action  | Description |
+|---------|-------------|
+| **Read**   | View all observed stars with full details |
+| **Add**    | Add a new star with complete observation details |
+| **Update** | Modify existing entries — any field can be edited, including marking temperature as `"unknown"` |
+| **Delete** | Remove stars with incorrect or duplicate entries |
+
+---
+
+## 📶 Offline Functionality
+
+Star App Journal works **seamlessly offline**, storing all changes locally and **synchronizing automatically** when the device is back online.
+
+- ✅ **Offline**
+  - Create, read, update, and delete stars (stored locally in SQLite)
+- 🔁 **Sync**
+  - Upon reconnection, all local changes are pushed to the server
+
+---
+
+## 🌐 Data Flow
+
+```mermaid
+graph TD
+  A[User Input] --> B[Local DB]
+  B --> C{Online?}
+  C -- No --> D[Stored Locally]
+  C -- Yes --> E[Sync to Server]
+  D -->|When online| E
