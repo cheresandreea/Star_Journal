@@ -2,12 +2,19 @@ import 'package:get/get.dart';
 import 'package:star_journal/controller/SyncService.dart';
 import 'package:star_journal/domain/Star.dart';
 import 'package:star_journal/repository/IRepository.dart';
+import 'package:star_journal/repository/RepositoryDB.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../repository/Repository.dart';
 
 class Controller extends GetxController {
-  final IRepository localRepository;
-  final SyncService syncService;
+  final Repository localRepository;
+  final RepositoryDB serverRepository;
 
-  Controller(this.localRepository, this.syncService);
+
+  late WebSocketChannel channel;
+
+  Controller(this.localRepository, this.serverRepository);
 
   var stars = <Star>[].obs;
 
@@ -15,32 +22,69 @@ class Controller extends GetxController {
   void onInit() {
     super.onInit();
     loadStars();
-
+    connectWebSocket();
   }
+
 
   void loadStars() async {
     final fetchedStars = await localRepository.getStars();
     stars.assignAll(fetchedStars);
   }
 
+  void refresh() async {
+    if (await serverRepository.isOnline()) {
+      final pendingStars = await localRepository.getPendingAdds();
+      for (final star in pendingStars) {
+        try {
+          final syncedStar = await serverRepository.addStar(star);
+          await localRepository.addStar(syncedStar); // ensure it exists
+        } catch (e) {
+          print("Failed to sync star: ${star.name}, error: $e");
+        }
+      }
+      await localRepository.clearPendingAdds();
+      loadStars(); // refresh UI
+      print("Pending stars synced successfully.");
+    }
+  }
+
+
+
   Future<List<Star>> getStars() async {
     return localRepository.getStars();
   }
 
   Future<Star> addStar(Star star) async {
-    validateStar(star);
-    final addedStar = await localRepository.addStar(star);
-    print("Added star: $addedStar");
-    stars.add(addedStar);
-    syncService.enqueueSync(addedStar, 'add');
-    return addedStar;
+    try {
+      if (await serverRepository.isOnline()) {
+        final addedStar = await serverRepository.addStar(star);
+        await localRepository.addStar(addedStar); // save locally
+        stars.add(addedStar);
+        print("Added star to remote: $addedStar");
+        return addedStar;
+      } else {
+        print("Server is offline, saving star to pending");
+        await localRepository.addStar(star); // add to main table
+        await localRepository.savePendingAdd(star); // save in PendingAdd
+        stars.add(star);
+        return star;
+      }
+    } catch (e) {
+      print("Failed to add star: $e");
+      Get.snackbar('Error', 'Failed to add star');
+      throw Exception('Failed to add star');
+    }
   }
 
-  Future<void> deleteStar(int? id) async {
-    if (id == null || id <= 0) throw Exception('Invalid ID');
-    await localRepository.deleteStar(id);
-    stars.removeWhere((star) => star.id == id);
-    syncService.enqueueSync(Star(id: id, name: '', radius: 0, xPosition: 0, yPosition: 0, temperature: 0, galaxy: '', constellation: '', description: '', syncStatus: false), 'delete');
+
+  Future<void> deleteStar(int id) async {
+    try {
+      await localRepository.deleteStar(id);
+      stars.removeWhere((star) => star.id == id);
+    } catch (e) {
+      print("Failed to delete star: $e");
+      throw Exception('Failed to delete star');
+    }
   }
 
   Future<Star?> getStarById(int id) async {
@@ -49,14 +93,15 @@ class Controller extends GetxController {
   }
 
   Future<Star> updateStar(Star star) async {
-    validateStar(star);
-    final updatedStar = await localRepository.updateStar(star);
-    final index = stars.indexWhere((s) => s.id == star.id);
-    if (index != -1) {
-      stars[index] = updatedStar;
+    try {
+      validateStar(star);
+      final updatedStar = await localRepository.updateStar(star);
+      print("Updated star on remote: $updatedStar");
+    } catch (e) {
+      print("Failed to update star: $e");
+      throw Exception('Failed to update star');
     }
-    syncService.enqueueSync(updatedStar, 'update');
-    return updatedStar;
+    return star;
   }
 
   void validateStar(Star star) {
@@ -70,5 +115,16 @@ class Controller extends GetxController {
     if (star.description!.isEmpty) throw Exception('Description is required');
   }
 
+  void connectWebSocket() {
+    channel = WebSocketChannel.connect(Uri.parse('ws:http://192.168.1.253:3000/ws'));
+    channel.stream.listen((message) {
+      final newStar = Star.fromJson(jsonDecode(message));
+      Get.snackbar('New Star Added', 'Star: ${newStar.name}');
+    }, onError: (error) {
+      print('WebSocket error: $error');
+    }, onDone: () {
+      print('WebSocket connection closed');
+    });
+  }
 
 }

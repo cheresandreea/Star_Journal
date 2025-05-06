@@ -66,10 +66,6 @@ class ViewScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    'Synced: ${star.syncStatus ?? "No description available"}',
-                    style: TextStyle(fontSize: 20),
-                  ),
                 ],
               ),
             ),
