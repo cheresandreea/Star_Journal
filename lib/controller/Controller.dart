@@ -15,7 +15,7 @@ class Controller extends GetxController {
   void onInit() {
     super.onInit();
     loadStars();
-    syncService.startSynchronization();
+
   }
 
   void loadStars() async {
