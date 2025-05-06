@@ -26,7 +26,6 @@ class StarsScreen extends StatelessWidget {
             final star = controller.stars[index];
             return ListTile(
               title: Text(star.name),
-              subtitle: Text(star.constellation ?? 'Unknown'), // Fallback to 'Unknown' if constellation is null
               trailing: Row(
                 mainAxisSize: MainAxisSize.min, // Ensures buttons are only as wide as necessary
                 children: [

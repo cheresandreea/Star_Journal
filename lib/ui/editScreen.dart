@@ -29,7 +29,7 @@ class _EditScreenState extends State<EditScreen> {
   @override
   void initState() {
     super.initState();
-    final controller = Get.find<Controller>();
+    final Controller controller = Get.find<Controller>();
     _star = controller.stars.firstWhere(
           (star) => star.id.toString() == widget.id,
       orElse: () => Star(id: 0, name: 'Not Found'));

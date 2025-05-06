@@ -35,6 +35,8 @@ class _AddStarScreenState extends State<AddScreen> {
     super.dispose();
   }
 
+
+
   void _saveStar() {
     setState(() {
       _errorMessage = null;

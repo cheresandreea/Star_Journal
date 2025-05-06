@@ -10,7 +10,7 @@ class ViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<Controller>(); // Get the controller
+    final Controller controller = Get.find<Controller>();
 
     return Scaffold(
       appBar: AppBar(
@@ -63,6 +63,11 @@ class ViewScreen extends StatelessWidget {
                   SizedBox(height: 10),
                   Text(
                     'Description: ${star.description ?? "No description available"}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Synced: ${star.syncStatus ?? "No description available"}',
                     style: TextStyle(fontSize: 20),
                   ),
                 ],

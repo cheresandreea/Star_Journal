@@ -1,18 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:star_journal/NetworkService.dart';
 import 'package:star_journal/controller/Controller.dart';
+import 'package:star_journal/controller/SyncService.dart';
 import 'package:star_journal/repository/Repository.dart';
+import 'package:star_journal/repository/RepositoryDB.dart';
+import 'package:star_journal/repository/RepositoryManager.dart';
+
 import 'package:star_journal/ui/addScreen.dart';
 import 'package:star_journal/ui/editScreen.dart';
 import 'package:star_journal/ui/starsScreen.dart';
 import 'package:star_journal/ui/viewScreen.dart';
 
+
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    final repo = await Repository.create();
-    Get.put(Controller(repo));
+    final serverRepository = await RepositoryDB.create();
+    final localRepository = await Repository.create();
+    // final repositoryManager = RepositoryManager(
+    //   localRepository: localRepository,
+    //   serverRepository: serverRepository,
+    // );
+
+    final syncService = SyncService(localRepository, serverRepository);
+    Get.put(Controller(localRepository, syncService));
+    // final remoteRepo = await RepositoryDB.create();
+    // final networkService = NetworkService();
+    //
+    // final repo = RepositoryManager(
+    //   repository: localRepo,
+    //   repositoryDB: remoteRepo,
+    //   networkService: networkService,
+    // );
+    // Get.put(Controller(localRepo));
 
     runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -22,7 +44,6 @@ void main() async {
       getPages: [
         // Home page (stars screen)
         GetPage(name: '/', page: () => StarsScreen()),
-        // Dynamic route for viewing a star
         GetPage(
           name: '/viewStar/:id',
           page: () {
@@ -31,9 +52,8 @@ void main() async {
               return StarsScreen();
             }
             return ViewScreen(id: id);
-          }, // Make sure ViewStarScreen takes the 'id' parameter
+          },
           binding: BindingsBuilder(() {
-            // Optionally bind any controllers or dependencies here if needed
           }),
         ),
         GetPage(
@@ -44,9 +64,8 @@ void main() async {
               return StarsScreen();
             }
             return EditScreen(id: id);
-          },// Make sure EditStarScreen takes the 'id' parameter
+          },
            binding: BindingsBuilder(() {
-            // Optionally bind any controllers or dependencies here if needed
           }),
         ),
         GetPage(name: '/addStar', page: () => AddScreen()),
@@ -77,8 +96,8 @@ class BackgroundWithApp extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/star.png', // Replace with the path to your background image
-              fit: BoxFit.cover, // Cover the entire screen with the image
+              'assets/star.png',
+              fit: BoxFit.cover,
             ),
           ),
           StarsScreen(), // This is your actual app content
