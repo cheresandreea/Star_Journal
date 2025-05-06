@@ -40,7 +40,7 @@ dependencies:
   get: ^4.6.5
   http: ^0.13.3
   connectivity_plus: ^6.1.1
-
+  web_socket_client: ^0.2.0
 
 dev_dependencies:
   flutter_test:

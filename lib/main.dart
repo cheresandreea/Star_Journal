@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:star_journal/NetworkService.dart';
 import 'package:star_journal/controller/Controller.dart';
-import 'package:star_journal/controller/SyncService.dart';
 import 'package:star_journal/repository/Repository.dart';
 import 'package:star_journal/repository/RepositoryDB.dart';
-import 'package:star_journal/repository/RepositoryManager.dart';
 
 import 'package:star_journal/ui/addScreen.dart';
 import 'package:star_journal/ui/editScreen.dart';
@@ -24,8 +21,7 @@ void main() async {
     //   serverRepository: serverRepository,
     // );
 
-    final syncService = SyncService(localRepository, serverRepository);
-    Get.put(Controller(localRepository, syncService));
+    Get.put(Controller(localRepository, serverRepository));
     // final remoteRepo = await RepositoryDB.create();
     // final networkService = NetworkService();
     //

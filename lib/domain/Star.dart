@@ -8,7 +8,6 @@ class Star {
   final String? galaxy;
   final String? constellation;
   final String? description;
-  final bool syncStatus;
 
   Star({
     required this.id,
@@ -20,7 +19,6 @@ class Star {
     this.galaxy,
     this.constellation,
     this.description,
-    this.syncStatus = false,
   });
 
   factory Star.fromJson(Map<String, dynamic> json) {
@@ -36,13 +34,12 @@ class Star {
       galaxy: json['galaxy'] ?? '', // Provide a default empty string if missing
       constellation: json['constellation'] ?? '', // Provide a default empty string if missing
       description: json['description'] ?? '', // Provide a default empty string if missing
-      syncStatus: json['syncStatus'] == 1,
     );
   }
 
   @override
   String toString() {
-    return 'Star(id: $id, name: $name, radius: $radius, xPosition: $xPosition, yPosition: $yPosition, temperature: $temperature, galaxy: $galaxy, constellation: $constellation, description: $description, syncStatus: $syncStatus)';
+    return 'Star(id: $id, name: $name, radius: $radius, xPosition: $xPosition, yPosition: $yPosition, temperature: $temperature, galaxy: $galaxy, constellation: $constellation, description: $description)';
   }
 
   Map<String, dynamic> toJson() {
@@ -56,7 +53,6 @@ class Star {
       'galaxy': galaxy,
       'constellation': constellation,
       'description': description,
-      'syncStatus': syncStatus ? 1 : 0,
     };
   }
 
@@ -70,7 +66,6 @@ class Star {
     String? galaxy,
     String? constellation,
     String? description,
-    bool? syncStatus,
   }) {
     return Star(
       id: id ?? this.id,
@@ -82,7 +77,6 @@ class Star {
       galaxy: galaxy ?? this.galaxy,
       constellation: constellation ?? this.constellation,
       description: description ?? this.description,
-      syncStatus: syncStatus ?? this.syncStatus, // Default to current syncStatus
     );
   }
 }
