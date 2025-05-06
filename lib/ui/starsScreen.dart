@@ -27,12 +27,11 @@ class StarsScreen extends StatelessWidget {
             return ListTile(
               title: Text(star.name),
               trailing: Row(
-                mainAxisSize: MainAxisSize.min, // Ensures buttons are only as wide as necessary
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: () {
-                      // Show confirmation dialog before deleting the star
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -51,7 +50,7 @@ class StarsScreen extends StatelessWidget {
                                 onPressed: () {
                                   // Delete the star if the user chooses "Yes"
                                   controller.deleteStar(star.id);
-                                  Navigator.of(context).pop(); // Close the dialog after deleting
+                                  Navigator.of(context).pop();
                                 },
                                 child: Text('Yes'),
                               ),
@@ -86,7 +85,7 @@ class StarsScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.toNamed('/addStar'); // Navigate to the 'add star' screen
-        }, // Add icon to represent adding a star
+        },
         tooltip: 'Add Star',
         child: Icon(Icons.add),
       ),
