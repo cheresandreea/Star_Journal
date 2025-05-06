@@ -107,10 +107,9 @@ class _AddStarScreenState extends State<AddScreen> {
       return;
     }
 
-    // Repeat validation for other fields as needed...
 
     final newStar = Star(
-      id: DateTime.now().millisecondsSinceEpoch, // Generate a unique ID
+      id: DateTime.now().millisecondsSinceEpoch,
       name: name,
       radius: radius,
       xPosition: xPosition,
@@ -122,7 +121,7 @@ class _AddStarScreenState extends State<AddScreen> {
     );
 
     final controller = Get.find<Controller>();
-    controller.addStar(newStar); // Add the new star
+    controller.addStar(newStar);
     Get.back(); // Navigate back
   }
 
@@ -179,7 +178,7 @@ class _AddStarScreenState extends State<AddScreen> {
                 controller: _descriptionController,
                 decoration: InputDecoration(labelText: 'Description'),
               ),
-              // Repeat TextFields for other inputs...
+
               ElevatedButton(
                 onPressed: _saveStar,
                 child: Text('Add Star'),
